@@ -20,11 +20,13 @@ llm_model = "gpt-4o-mini"
 
 
 chat = ChatOpenAI(
-    temperature=0.0,
-    model=llm_model,
-    streaming=True,
-    openai_api_key=api_key)
+    temperature=0.0, # randomness value
+    model=llm_model, # define the api model
+    streaming=True, # for chunking purpose
+    openai_api_key=api_key # where your wallet is bleeding
+    )
 
+# instruction for the LLM, tell it what to do and how to structure the response
 review_template = """\
 For the following text, extract the following information:
 
@@ -45,6 +47,7 @@ price_value
 text: {text}
 """
 
+# user input string
 customer_review = """\
 This leaf blower is pretty amazing.  It has four settings:\
 candle blower, gentle breeze, windy city, and tornado. \
@@ -57,12 +60,14 @@ It's slightly more expensive than the other leaf blowers \
 out there, but I think it's worth it for the extra features.
 """
 
+# create the prompt template
 prompt_template = ChatPromptTemplate.from_template(review_template)
 
-
+# initialize the json parser from predefined schemas
 output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
 format_instructions = output_parser.get_format_instructions()
 
+# get the 
 messages = prompt_template.format_messages(
     text=customer_review,
     format_instructions=format_instructions
